@@ -6,7 +6,7 @@ The three (3) domain logic patterns are implemented in Java using the Revenue Re
 - Domain Model
 - Table Module
 
-![Martin Folwer and PoEAA book cover](revenue-recognition/src/site/resources/images/Martin-Fowler-and-Patterns-of-Enterprise-Application-Architecture-book.jpg)
+![Martin Folwer and PoEAA book cover](src/site/resources/images/Martin-Fowler-and-Patterns-of-Enterprise-Application-Architecture-book.jpg)
 
 ## The Revenue Recognition Problem
 
