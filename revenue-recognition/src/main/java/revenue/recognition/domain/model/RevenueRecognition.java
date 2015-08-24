@@ -1,14 +1,11 @@
 package revenue.recognition.domain.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Locale;
 
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import javax.money.format.AmountFormatQueryBuilder;
-import javax.money.format.MonetaryAmountFormat;
-import javax.money.format.MonetaryFormats;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -83,14 +80,11 @@ public class RevenueRecognition {
 
 	@PrePersist
 	protected void onPrePersist() {
-		MonetaryAmountFormat amountFormat =
-				MonetaryFormats.getAmountFormat(
-						AmountFormatQueryBuilder
-							.of(Locale.US)
-							.set("pattern", Contract.PATTERN)
-							.build());
 		currencyCode = amount.getCurrency().getCurrencyCode();
-		amount_ = new BigDecimal(amountFormat.format(amount));
+		amount_ = amount.getNumber()
+				.numberValue(BigDecimal.class)
+				.setScale(amount.getCurrency().getDefaultFractionDigits(),
+						RoundingMode.HALF_EVEN);
 	}
 
 	@PostLoad

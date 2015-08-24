@@ -1,19 +1,16 @@
 package revenue.recognition.domain.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 import javax.money.MonetaryAmountFactory;
-import javax.money.format.AmountFormatQueryBuilder;
-import javax.money.format.MonetaryAmountFormat;
-import javax.money.format.MonetaryFormats;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -36,19 +33,6 @@ import javax.persistence.Transient;
 public class Contract {
 
 	public static final CurrencyUnit CURRENCY = Monetary.getCurrency("USD");
-	public static final String PATTERN;
-
-	static {
-		StringBuilder pattern = new StringBuilder("#0");
-		int fractionDigits = CURRENCY.getDefaultFractionDigits();
-		if (fractionDigits > 0) {
-			pattern.append(".");
-			for (int i = 0; i < fractionDigits; i++) {
-				pattern.append("0");
-			}
-		}
-		PATTERN = pattern.toString();
-	}
 
 	@Transient
 	private ContractId contractId;
@@ -137,14 +121,11 @@ public class Contract {
 
 	@PrePersist
 	protected void onPrePersist() {
-		MonetaryAmountFormat amountFormat =
-				MonetaryFormats.getAmountFormat(
-						AmountFormatQueryBuilder
-							.of(Locale.US)
-							.set("pattern", PATTERN)
-							.build());
 		currencyCode = revenue.getCurrency().getCurrencyCode();
-		revenue_ = new BigDecimal(amountFormat.format(revenue));
+		revenue_ = revenue.getNumber()
+				.numberValue(BigDecimal.class)
+				.setScale(revenue.getCurrency().getDefaultFractionDigits(),
+						RoundingMode.HALF_EVEN);
 	}
 
 	@PostLoad
