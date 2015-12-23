@@ -1,0 +1,9 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+
+    <weaver options="-verbose -Xset:weaveJavaxPackages=true -showWeaveInfo">
+        <!-- only weave classes in our application-specific packages -->
+        <include within="makerchecker.security.*"/>
+    </weaver>
+
+</aspectj>
