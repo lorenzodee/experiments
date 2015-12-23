@@ -8,6 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,6 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=MakerCheckerTestsConfig.class)
 public class MakerCheckerTests {
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private User maker;
 	private Authentication makerAuthentication;
@@ -66,13 +71,15 @@ public class MakerCheckerTests {
 			try {
 				po.issue();
 				fail("Maker should not be allowed to complete the purchase order s/he made");
-			} catch (Exception e) {
+			} catch (AccessDeniedException e) {
 				// pass!
+				logger.debug("Caught expected exception: {}", e.getClass());
+				logger.debug("\tReason: {}", e.getMessage());
 			}
 		} finally {
 			SecurityContextHolder.clearContext();
 		}
-		
+
 		SecurityContextHolder.setContext(checkerSecurityContext);
 		try {
 			try {

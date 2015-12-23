@@ -3,6 +3,10 @@ package makerchecker.security;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
 
+/**
+ * A sample business transaction that requires two individuals for its completion.
+ * The maker of the purchase order cannot be the same individual who issues it.
+ */
 // @javax.persistence.Entity
 public class PurchaseOrder {
 	
